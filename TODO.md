@@ -44,10 +44,10 @@ denominado Serviço A.
     * Sendo F = Fahrenheit
     * Sendo C = Celsius
     * Sendo K = Kelvin
-* Para dúvidas da implementação do OTEL, você pode clicar aqui
-* Para implementação de spans, você pode clicar aqui
-* Você precisará utilizar um serviço de collector do OTEL
-* Para mais informações sobre Zipkin, você pode clicar aqui
+* Para dúvidas da implementação do OTEL, você pode [clicar aqui](https://opentelemetry.io/docs/languages/go/getting-started/)
+* Para implementação de spans, você pode [clicar aqui](https://opentelemetry.io/docs/languages/go/instrumentation/#creating-spans)
+* Você precisará utilizar um serviço de [collector do OTEL](https://opentelemetry.io/docs/collector/quick-start/)
+* Para mais informações sobre Zipkin, você pode [clicar aqui](https://zipkin.io/)
 
 # Entrega
 

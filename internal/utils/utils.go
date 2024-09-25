@@ -1,6 +1,9 @@
 package utils
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func ConcatFields(m map[string]any, fields ...string) string {
 	r := ""
@@ -18,4 +21,16 @@ func ConcatFields(m map[string]any, fields ...string) string {
 		}
 	}
 	return r
+}
+
+func ConvertField(m map[string]any, field string, out any) bool {
+	v, found := m[field]
+	if !found {
+		return false
+	}
+	err := json.Unmarshal([]byte(fmt.Sprintf("%v", v)), out)
+	if err != nil {
+		return false
+	}
+	return true
 }

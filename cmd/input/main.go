@@ -5,10 +5,8 @@ import (
 	"github.com/betonetotbo/go-expert-labs-otel/internal/http_utils"
 	"github.com/betonetotbo/go-expert-labs-otel/internal/input"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/url"
-	"time"
 )
 
 func main() {
@@ -21,15 +19,12 @@ func main() {
 		log.Fatalf("invalid weather service url: %s", cfg.WeatherServiceUrl)
 	}
 
-	router := chi.NewRouter()
+	cfg.ServiceName = "input-service"
 
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.Logger)
-	router.Use(middleware.Timeout(time.Second * 15))
-
-	router.Post("/", input.NewInputHandler(&cfg))
-
-	http_utils.StartServer(cfg.ServerPort, router)
+	http_utils.StartServer(&cfg.HttpConfig,
+		func(router *chi.Mux, spanner http_utils.Spanner) {
+			handler := input.NewHandler(&cfg, spanner)
+			router.Post("/", handler.Handle)
+		},
+	)
 }

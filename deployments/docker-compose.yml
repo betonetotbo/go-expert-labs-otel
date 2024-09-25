@@ -1,0 +1,50 @@
+services:
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
+
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - "./otel-collector-config.yaml:/etc/otel-collector-config.yaml"
+    ports:
+      - "8888:8888"
+      - "8889:8889"
+      - "4317:4317"
+    depends_on:
+      - jaeger
+
+  input:
+    container_name: input
+    build:
+      context: ".."
+      dockerfile: "deployments/input.Dockerfile"
+    environment:
+      SERVER_PORT: "8080"
+      WEATHER_SERVICE_URL: "http://weather:8081"
+      OPEN_TELEMETRY_COLLECTOR_URL: "otel-collector:4317"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - otel-collector
+
+  weather:
+    container_name: weather
+    build:
+      context: ".."
+      dockerfile: "deployments/weather.Dockerfile"
+    environment:
+      SERVER_PORT: "8081"
+      OPEN_TELEMETRY_COLLECTOR_URL: "otel-collector:4317"
+      WEATHER_API_KEY: "${WEATHER_API_KEY}"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - otel-collector
