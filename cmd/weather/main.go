@@ -17,6 +17,10 @@ func main() {
 
 	cfg.ServiceName = "weather-service"
 
+	if cfg.WeatherApiKey == "" {
+		log.Fatalf("missing weather api key")
+	}
+
 	http_utils.StartServer(&cfg.HttpConfig,
 		func(router *chi.Mux, spanner http_utils.Spanner) {
 			handler := weather.NewHandler(&cfg, spanner)
